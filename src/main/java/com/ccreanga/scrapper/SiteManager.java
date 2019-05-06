@@ -1,45 +1,39 @@
 package com.ccreanga.scrapper;
 
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.openqa.selenium.*;
 
-@SpringBootApplication
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
-public class Scrapper implements CommandLineRunner {
+public class SiteManager {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Scrapper.class, args);
-    }
+    public static Map<String,WebElement> getSuggestions(WebDriver driver, String user, String passwd) throws Exception {
+        Map<String,WebElement> values = new HashMap<>();
 
-    @Override
-    public void run(String... args) throws Exception{
-        SeleniumUtils.locateChromeDriver(null);
-        String user = System.getenv("LINKEDIN_USER");
-        String passwd = System.getenv("LINKEDIN_PASSWD");
-        if (((user==null) || (passwd==null)) && (args.length==2)){
-            user = args[0];
-            passwd = args[1];
-        }
-        if ((user==null) || (passwd==null)){
-            log.info("user/passwd should be configured as env variables (LINKEDIN_USER/LINKEDIN_PASSWD) or passed as arguments");
-            System.exit(1);
-        }
-        WebDriver driver = SeleniumUtils.createWebDriver();
         driver.get("https://www.linkedin.com");
-        WebElement username = byId(driver,"login-email");
-        WebElement password = byId(driver,"login-password");
-        WebElement login = byId(driver,"login-submit");
-        username.sendKeys(user);
-        password.sendKeys(passwd);
-        login.click();
+
+        try {
+            // todo - sometimes this page is the site landing, sometimes not
+            WebElement signInButton = driver.findElement(By.className("nav__button-secondary"));
+            signInButton.click();
+            WebElement username = byId(driver,"username");
+            WebElement password = byId(driver,"password");
+            WebElement login = byCss(driver,".btn__primary--large.from__button--floating");
+            System.out.println("cucu");
+
+        }catch (NoSuchElementException e){
+            WebElement username = byId(driver,"login-email");
+            WebElement password = byId(driver,"login-password");
+            WebElement login = byId(driver,"login-submit");
+            username.sendKeys(user);
+            password.sendKeys(passwd);
+            login.click();
+        }
+
+
         WebElement network = byId(driver,"mynetwork-tab-icon");
         network.click();
 
@@ -48,17 +42,14 @@ public class Scrapper implements CommandLineRunner {
             //profile url
             String profileLink = byCss(next,".discover-person-card__link.ember-view","can't find profile link").getAttribute("href");
             WebElement connectButton = byCss(
-                next,".js-discover-person-card__action-btn.full-width.artdeco-button.artdeco-button--2.artdeco-button--full.artdeco-button--secondary.ember-view","can't find connect button");
+                    next,".js-discover-person-card__action-btn.full-width.artdeco-button.artdeco-button--2.artdeco-button--full.artdeco-button--secondary.ember-view","can't find connect button");
             Thread.sleep(2000+(int)(Math.random()*4000));
-            log.info("Inviting {}",profileLink);
-            connectButton.click();
-
+            values.put(profileLink,connectButton);
         }
-        System.out.println(elements.size());
-
+        return values;
     }
 
-    public static WebElement byId(SearchContext searchContext,String id){
+    public static WebElement byId(SearchContext searchContext, String id){
         return byId(searchContext,id,"can't find the element identified by ");
     }
 
@@ -99,5 +90,4 @@ public class Scrapper implements CommandLineRunner {
         }
         return null;//never reached
     }
-
 }

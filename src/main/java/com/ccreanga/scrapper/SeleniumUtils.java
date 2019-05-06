@@ -12,7 +12,11 @@ import org.openqa.selenium.remote.CapabilityType;
 
 public class SeleniumUtils {
 
-    public static void locateChromeDriver(String driverLocation) {
+    public static void locateChromeDriver() {
+        locateChromeDriver(null);
+    }
+
+        public static void locateChromeDriver(String driverLocation) {
         String chromeDriver = "chromedriver";
         String os = System.getProperty("os.name").toLowerCase();
         if (os.startsWith("windows"))

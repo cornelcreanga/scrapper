@@ -5,6 +5,7 @@ buildscript {
         lombokVersion='1.18.6'
         guavaVersion='27.1-jre'
         seleniumVersion='3.141.59'
+        picocliVersion='3.9.6'
     }
     repositories {
         mavenCentral()
@@ -39,6 +40,7 @@ dependencies {
     compile group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version: seleniumVersion
     compile group: 'org.seleniumhq.selenium', name: 'selenium-api', version: seleniumVersion
     compile group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion
+    compile group: 'info.picocli', name: 'picocli', version: picocliVersion
 
     compile group:'org.springframework.boot',name:'spring-boot-starter',version:springVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion

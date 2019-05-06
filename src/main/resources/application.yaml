@@ -1,0 +1,6 @@
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} - %msg%n"
+  level:
+    com.ccreanga: ERROR
+    root: ERROR
