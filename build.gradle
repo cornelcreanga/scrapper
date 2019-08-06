@@ -6,6 +6,7 @@ buildscript {
         guavaVersion='27.1-jre'
         seleniumVersion='3.141.59'
         picocliVersion='3.9.6'
+        webdrivermanagerVersion='3.6.2'
     }
     repositories {
         mavenCentral()
@@ -33,6 +34,17 @@ group 'com.ccreanga'
 
 sourceCompatibility = 1.8
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+        resources {
+            srcDirs = ["src/main/resources"]
+        }
+    }
+}
+
 dependencies {
     testCompile group:'junit',name:'junit',version:'4.12'
     compile group:'ch.qos.logback',name:'logback-classic',version:logbackVersion
@@ -41,11 +53,10 @@ dependencies {
     compile group: 'org.seleniumhq.selenium', name: 'selenium-api', version: seleniumVersion
     compile group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion
     compile group: 'info.picocli', name: 'picocli', version: picocliVersion
+    compile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: webdrivermanagerVersion
 
     compile group:'org.springframework.boot',name:'spring-boot-starter',version:springVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compileOnly group:'org.projectlombok',name:'lombok',version:lombokVersion
     annotationProcessor group:'org.projectlombok',name:'lombok',version:lombokVersion
 }
-
-

@@ -1,16 +1,21 @@
 package com.ccreanga.scrapper;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.WebDriverManagerException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.slf4j.Logger;
 import picocli.CommandLine;
 
-import java.util.logging.*;
+import static java.lang.invoke.MethodHandles.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @CommandLine.Command(name = "linkedin",
         subcommands = {InviteSuggestions.class,
                 ListSuggestions.class})
 public class ParentCommand implements Runnable {
 
-    public static final Logger log = Logger.getLogger("log");
+    public static final Logger log = getLogger(lookup().lookupClass());
 
     @CommandLine.Option(names = {"-u", "--user"}, required = true, description = "user")
     protected String user;
@@ -22,31 +27,16 @@ public class ParentCommand implements Runnable {
 
     @Override
     public void run() {
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setFormatter(new Formatter() {
-            @Override
-            public String format(LogRecord record) {
-                String message = record.getMessage();
-                if (message.endsWith("\\"))
-                    return message.substring(0,message.length()-1);
-                return record.getMessage() + "\n";
-            }
-        });
-        consoleHandler.setLevel(Level.INFO);
-        log.setUseParentHandlers(false);
-        log.addHandler(consoleHandler);
-        log.setLevel(Level.INFO);
-
-        SeleniumUtils.locateChromeDriver(null);
-        if (((user==null) || (password==null))){
-            user  = System.getenv("LINKEDIN_USER");
-            password = System.getenv("LINKEDIN_PASSWD");
+        try {
+            WebDriverManager.chromedriver().setup();
+        }catch (WebDriverManagerException e){
+            log.info("can't setup the chrome driver, the error is {}", e.getMessage());
         }
-        if ((user==null) || (password==null)){
-            log.info("user/passwd should be configured as env variables (LINKEDIN_USER/LINKEDIN_PASSWD) or passed as arguments");
-            System.exit(1);
+        try{
+            driver = new ChromeDriver();
+        }catch(IllegalStateException e){
+            log.info("can't instantiate chrome driver, the error is {}", e.getMessage());
         }
-        driver = SeleniumUtils.createWebDriver();
     }
 
     public String getUser() {
