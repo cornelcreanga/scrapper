@@ -34,6 +34,7 @@ public class ParentCommand implements Runnable {
         }
         try{
             driver = new ChromeDriver();
+            driver.manage().window().maximize();
         }catch(IllegalStateException e){
             log.info("can't instantiate chrome driver, the error is {}", e.getMessage());
         }

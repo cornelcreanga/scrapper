@@ -18,11 +18,6 @@ public class SiteManager {
 
         driver.get("https://www.linkedin.com");
         Capabilities capabilities = ((ChromeDriver)driver).getCapabilities();
-        //https://github.com/bonigarcia/webdrivermanager
-        //browserVersion -> 76.0.3809.87
-        //browserName -> chrome - map
-        //"chromedriverVersion" -> "76.0.3809.68 (420c9498db8ce8fcd190a954d51297672c1515d5-refs/branch-heads/3809@{#864})"
-        //"userDataDir" -> "/var/folders/k2/bfwstqws2xd38c7620bc9jxw0000gn/T/.com.google.Chrome.Knb97T"
         try {
             // todo - sometimes this page is the site landing, sometimes not
             WebElement signInButton = driver.findElement(By.className("nav__button-secondary"));
@@ -43,11 +38,13 @@ public class SiteManager {
             login.click();
         }
 
-
         WebElement network = byId(driver,"mynetwork-tab-icon");
         network.click();
         sleep(10+(int)(Math.random()*4));
-        List<WebElement> elements = listByCss(driver,".discover-person-card.artdeco-card.ember-view","can't find connect panel");
+        //only care about the first two types of suggestions
+        WebElement basicSuggestionsDiv = byCss(driver,".mn-cohorts-list.artdeco-card.mb4.ember-view","can't find connect panel");
+
+        List<WebElement> elements = listByCss(basicSuggestionsDiv,".discover-person-card.artdeco-card.ember-view","can't find person panel");
         for (WebElement next : elements) {
             //profile url
             String profileLink = byCss(next,".discover-person-card__link.ember-view","can't find profile link").getAttribute("href");

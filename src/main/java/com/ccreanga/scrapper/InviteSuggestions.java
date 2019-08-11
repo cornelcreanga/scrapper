@@ -23,9 +23,15 @@ public class InviteSuggestions implements Runnable {
                 if (demo){
                     System.out.println("Suggestion: "+ k);
                 }else{
-                    v.click();
-                    System.out.println("Sending invite to "+k);
-                    sleep(2+(int)(Math.random()*4));
+                    try {
+                        v.click();
+                    }catch(Exception e){
+                        System.out.println("Can't click on "+k+" - it might be outside of the visible panel");
+                        return;
+                    }
+                    int sleep = 2+(int)(Math.random()*4);
+                    System.out.println("Sent invite to " +k + " sleeping " + sleep + " seconds");
+                    sleep(sleep);
                 }
             });
         } catch (Exception e) {
